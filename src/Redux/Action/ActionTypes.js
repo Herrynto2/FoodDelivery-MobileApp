@@ -1,0 +1,6 @@
+export const USER_LOGIN = 'USER_LOGIN';
+export const USER_LOGOUT = 'USER_LOGOUT';
+export const USER_CHANGE_PASSWORD = 'USER_CHANGE_PASSWORD';
+export const USER_VERIFY = 'USER_VERIFY';
+export const USER_REGISTER = 'USER_REGISTER';
+export const UPDATE_PROFILE = 'UPDATE_PROFILE';

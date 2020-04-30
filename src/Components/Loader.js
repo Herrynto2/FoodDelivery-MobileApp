@@ -1,33 +1,23 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
 import {Button, Overlay} from 'react-native-elements';
 
 function Loader(props) {
   return (
     <View>
       <Overlay
-        isVisible={props.isVisible}
-        windowBackgroundColor="rgba(46, 46, 46, .8)"
-        overlayBackgroundColor="white"
+        isVisible={props.loading}
+        windowBackgroundColor="rgba(46, 46, 46, .5)"
+        overlayBackgroundColor="transparent"
+        borderWidth={0}
         width={300}
         height={180}
         borderRadius={20}
         style={{padding: 20}}
-        overlayStyle={{padding: 20, paddingTop: 40}}>
-        <Text
-          style={{
-            textAlign: 'center',
-            fontSize: 18,
-            color: '#545454',
-            marginTop: -10,
-          }}>
-          {props.message}
-        </Text>
-        <Button
-          title="Yes"
-          onPress={() => props.setHideVisible(false)}
-          buttonStyle={style.confirm}
-        />
+        overlayStyle={{padding: 20, paddingTop: 40, elevation: 0}}>
+        <View>
+          <ActivityIndicator size="large" color="white" />
+        </View>
       </Overlay>
     </View>
   );
