@@ -3,21 +3,18 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import PrivateNavigator from './PrivateNavigation';
 import PublicNavigator from './PublicNavigation';
-// import Splash from '../Screens/Splash/Splash';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { userLogout } from '../Redux/actions/userDataAction';
-// import jwt_decode from 'jwt-decode';
+import {useSelector, useDispatch} from 'react-redux';
+import {userLogout} from '../Redux/Action/userDataAction';
+import jwt_decode from 'jwt-decode';
 
 function MainRoutes(props) {
-  //   const {isLogin, token} = useSelector(state => state.userData);
-  const [isLogin, setLogin] = React.useState(true);
-  //   const dispatch = useDispatch();
-  //   if (isLogin && token) {
-  //     const payload = jwt_decode(token);
-  //     if (new Date(payload.exp * 1000).getTime() - new Date().getTime() <= 0) {
-  //       dispatch(userLogout());
-  //     }
-  if (isLogin === false) {
+  const {isLogin, token} = useSelector(state => state.userData);
+  const dispatch = useDispatch();
+  if (isLogin && token) {
+    const payload = jwt_decode(token);
+    if (new Date(payload.exp * 1000).getTime() - new Date().getTime() <= 0) {
+      dispatch(userLogout());
+    }
     return <PrivateNavigator />;
   } else {
     return <PublicNavigator />;

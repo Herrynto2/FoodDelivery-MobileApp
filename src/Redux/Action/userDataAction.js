@@ -1,11 +1,9 @@
-import {USER_LOGIN, USER_LOGOUT, UPDATE_PROFILE} from './actionTypes';
-import {getData, submitData, patchData} from '../../Helpers/CRUD';
+import {USER_LOGIN, USER_LOGOUT} from './actionTypes';
+import {getData, submitData} from '../../Helpers/CRUD';
 
 export const userLogin = data => async dispatch => {
   try {
-    console.log('data', data);
     const response = await submitData('login', data);
-    console.log('res', response);
     if (response.data && response.data.success) {
       await dispatch({
         type: USER_LOGIN,
@@ -19,14 +17,14 @@ export const userLogin = data => async dispatch => {
     // }
   }
 };
-// export const userLogout = () => async dispatch => {
-//   await dispatch({
-//     type: USER_LOGOUT,
-//   });
-//   await dispatch({
-//     type: CLEAR_HISTORY,
-//   });
-// };
+export const userLogout = () => async dispatch => {
+  await dispatch({
+    type: USER_LOGOUT,
+  });
+  // await dispatch({
+  //   type: CLEAR_HISTORY,
+  // });
+};
 // export const updateProfile = () => async dispatch => {
 //   try {
 //     const response = await getData('profile');

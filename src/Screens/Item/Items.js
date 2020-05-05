@@ -6,11 +6,6 @@ function Items(props) {
     <View>
       <Text>Items</Text>
     </View>
-    // <Provider store={store}>
-    //   <PersistGate persistor={persistor}>
-
-    //   </PersistGate>
-    // </Provider>
   );
 }
 export default Items;

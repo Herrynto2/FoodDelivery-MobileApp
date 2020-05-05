@@ -1,4 +1,4 @@
-import {USER_LOGIN, USER_LOGOUT, UPDATE_PROFILE} from '../Action/ActionTypes';
+import {USER_LOGIN, USER_LOGOUT} from '../Action/actionTypes';
 const initialState = {
   token: '',
   isLogin: false,
@@ -15,11 +15,11 @@ export default function userData(state = initialState, action) {
       };
     case USER_LOGOUT:
       return initialState;
-    case UPDATE_PROFILE:
-      return {
-        ...state,
-        dataProfile: action.payload,
-      };
+    // case UPDATE_PROFILE:
+    //   return {
+    //     ...state,
+    //     dataProfile: action.payload,
+    //   };
     default:
       return state;
   }

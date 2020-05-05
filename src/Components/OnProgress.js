@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {Image} from 'react-native-elements';
-// import Progress from '../Helpers/Image/progress.png';
+import Progress from '../Helpers/Image/progress.png';
 
 function OnProgress(props) {
   return (
@@ -19,7 +19,7 @@ function OnProgress(props) {
             This page's still on progress wait in other time
           </Text>
         </View>
-        {/* <Image source={Progress} style={{ width: 350, height: 250 }} /> */}
+        <Image source={Progress} style={{width: 350, height: 250}} />
       </View>
     </View>
   );

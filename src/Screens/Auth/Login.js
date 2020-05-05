@@ -1,24 +1,46 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ImageBackground,
-  Image,
-} from 'react-native';
-import {Input, Button} from 'react-native-elements';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import {Button} from 'react-native-elements';
 import ImgLogin from '../../Helpers/Image/signins.png';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Loader from '../../Components/Loader';
+import {useDispatch} from 'react-redux';
+import {userLogin} from '../../Redux/Action/userDataAction';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import * as Yup from 'yup';
+import CustomAlert from '../../Components/CustomAlert';
 
 function Login(props) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
 
-  const handleLogin = () => {
-    setLoading(true);
-  };
+  const dispatch = useDispatch();
+  const FormLogin = useFormik({
+    initialValues: {username: '', password: ''},
+    validationSchema: Yup.object({
+      username: Yup.string().required('Username is Required'),
+      password: Yup.string().required('Password is Required'),
+    }),
+    onSubmit: async (values, form) => {
+      setLoading(true);
+      try {
+        const response = await dispatch(userLogin(values));
+        console.log(response.data);
+        if (response.data && !response.data.success) {
+          CustomAlert(response.data.success, response.data.msg);
+        }
+      } catch (err) {
+        // console.log('er', err);
+        // if (!(err.message === 'Network Error')) {
+        if (err.response) {
+          CustomAlert(err.response.data.success, err.response.data.msg);
+        }
+        // }
+      }
+      setLoading(false);
+    },
+  });
 
   return (
     <View style={style.container}>
@@ -33,12 +55,16 @@ function Login(props) {
           marginBottom: 60,
         }}
       />
-      <Input
+      <CustomInputText
+        form={FormLogin}
+        name="username"
         placeholder="username ..."
         inputContainerStyle={style.input}
         inputStyle={style.inputText}
       />
-      <Input
+      <CustomInputText
+        form={FormLogin}
+        name="password"
         secureTextEntry={hidePassword ? true : false}
         placeholder="password ..."
         rightIcon={
@@ -65,7 +91,7 @@ function Login(props) {
         title="Sign In"
         buttonStyle={style.button1}
         titleStyle={style.text1}
-        onPress={handleLogin}
+        onPress={FormLogin.handleSubmit}
       />
     </View>
   );
