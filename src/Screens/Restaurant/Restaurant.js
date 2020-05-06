@@ -16,7 +16,6 @@ import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
 function Restaurant(props) {
   const {dataRestaurant} = useSelector(state => state.restaurantData);
   const dispatch = useDispatch();
-  console.log('ok', dataRestaurant);
 
   React.useEffect(() => {
     dispatch(getRestaurant());

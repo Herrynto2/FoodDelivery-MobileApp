@@ -2,8 +2,12 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {Icon, Avatar} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome5';
+import {useSelector} from 'react-redux';
+import user from '../../Helpers/Image/users.png';
 
 function Profile(props) {
+  const {dataProfile} = useSelector(state => state.userData);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={style.container}>
@@ -12,16 +16,22 @@ function Profile(props) {
           <View style={{flexDirection: 'row'}}>
             <Avatar
               rounded
-              // source={{
-              //   uri: `${BASE_URL}${this.props.data_user[0][0].images}`,
-              // }}
+              source={
+                (dataProfile.image && {
+                  uri: dataProfile.image,
+                }) ||
+                user
+              }
               size={100}
-              title="MD"
               containerStyle={{marginRight: 20}}
             />
             <View>
-              <Text style={style.nameUser}>Herry</Text>
-              <Text style={style.email}>herryheryanto@gmail.com</Text>
+              <Text style={style.nameUser}>
+                {dataProfile.name_user.substring(0, 15)}
+              </Text>
+              <Text style={style.email}>
+                {dataProfile.email.substring(0, 30)}
+              </Text>
             </View>
             <Icons name="chevron-right" size={13} style={style.iconUser} />
           </View>
@@ -133,17 +143,18 @@ const style = StyleSheet.create({
     marginTop: 22,
   },
   email: {
-    fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
     color: '#c7c7c7',
     marginTop: 0,
     fontFamily: 'SourceSansPro',
   },
   iconUser: {
     color: '#c7c7c7',
-    marginLeft: 35,
+    marginLeft: 16,
     width: 20,
     marginTop: 40,
+    position: 'absolute',
+    right: 0,
   },
   containerMenu: {
     borderBottomColor: '#eaeaea',

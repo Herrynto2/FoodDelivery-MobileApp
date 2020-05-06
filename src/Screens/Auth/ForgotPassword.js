@@ -12,14 +12,60 @@ import keys from '../../Helpers/Image/keys.png';
 import {Input, Button} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Loader from '../../Components/Loader';
+import {useDispatch} from 'react-redux';
+import {changePassword} from '../../Redux/Action/userDataAction';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import * as Yup from 'yup';
+import CustomAlert from '../../Components/CustomAlert';
 
 function ForgotPassword(props) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
 
-  const handleChangePass = () => {
-    setLoading(true);
-  };
+  const dispatch = useDispatch();
+  const FormReset = useFormik({
+    initialValues: {
+      username: '',
+      newpassword: '',
+      confirmpassword: '',
+    },
+    validationSchema: Yup.object({
+      username: Yup.string()
+        .min(8, 'Username Must have More Than 8 character')
+        .required('Username Is Required'),
+      newpassword: Yup.string()
+        .min(6, 'Password Must have More Than 6 Character')
+        .required('New Password Is Required'),
+      confirmpassword: Yup.string()
+        .oneOf([Yup.ref('newpassword')], 'Confirm Password Not Match')
+        .required('Confirm Password Is Required'),
+    }),
+    onSubmit: async (values, form) => {
+      setLoading(true);
+      try {
+        const response = await dispatch(changePassword(values));
+        console.log('res', response);
+        if (response.data && response.data.success) {
+          form.setSubmitting(false);
+          form.resetForm();
+          CustomAlert(
+            response.data.success,
+            response.data.verification_code,
+            () => props.navigation.navigate('Verify'),
+          );
+        } else {
+          CustomAlert(response.data.success, response.data.msg);
+        }
+      } catch (err) {
+        // if (!(err.message === 'Network Error')) {
+        if (err.response) {
+          CustomAlert(err.response.data.success, err.response.data.msg);
+        }
+      }
+      setLoading(false);
+    },
+  });
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -34,7 +80,10 @@ function ForgotPassword(props) {
           </Text>
           <Text style={style.textSmall}>same for confirm password</Text>
         </View>
-        <Input
+
+        <CustomInputText
+          form={FormReset}
+          name="username"
           placeholder="username"
           leftIcon={{type: 'font-awesome'}}
           inputContainerStyle={style.input}
@@ -42,7 +91,9 @@ function ForgotPassword(props) {
           // onChangeText={username => this.setState({username})}
           // value={this.state.username}
         />
-        <Input
+        <CustomInputText
+          form={FormReset}
+          name="newpassword"
           secureTextEntry={hidePassword ? true : false}
           placeholder="password ..."
           rightIcon={
@@ -58,7 +109,9 @@ function ForgotPassword(props) {
           inputContainerStyle={style.input}
           inputStyle={{...style.inputText, marginLeft: 15}}
         />
-        <Input
+        <CustomInputText
+          form={FormReset}
+          name="confirmpassword"
           secureTextEntry={hidePassword ? true : false}
           placeholder="Confirm Password"
           leftIcon={{type: 'font-awesome'}}
@@ -70,8 +123,7 @@ function ForgotPassword(props) {
           title="Send"
           buttonStyle={style.button1}
           titleStyle={style.text1}
-          onPress={handleChangePass}
-          // onPress={() => props.navigation.navigate('Verify')}
+          onPress={FormReset.handleSubmit}
         />
       </ScrollView>
     </View>

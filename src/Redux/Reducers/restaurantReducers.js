@@ -1,6 +1,6 @@
 import {BROWSE_RESTAURANT, DETAIL_RESTAURANT} from '../Action/actionTypes';
 const initialState = {
-  dataRestaurant: {},
+  dataRestaurant: [],
   dataRestaurantID: {},
 };
 

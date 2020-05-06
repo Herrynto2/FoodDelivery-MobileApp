@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome5';
-import {Avatar, Input, Button} from 'react-native-elements';
+import {Button} from 'react-native-elements';
+import {useDispatch} from 'react-redux';
+import {userLogout} from '../../Redux/Action/userDataAction';
 
 function Setting(props) {
+  const dispatch = useDispatch();
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1, paddingTop: 20, marginBottom: 10}}>
@@ -52,10 +48,10 @@ function Setting(props) {
           <View style={{alignItems: 'center'}}>
             <Button
               title="LOGOUT"
-              //   onPress={logoutUser}
               containerStyle={{width: 300}}
               buttonStyle={{borderRadius: 50, backgroundColor: '#bbbbc0'}}
               titleStyle={{fontSize: 18, color: '#2d2d2d', fontWeight: 'bold'}}
+              onPress={async () => await dispatch(userLogout())}
             />
           </View>
         </View>

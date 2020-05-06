@@ -12,11 +12,38 @@ import {Input, Overlay, Button, Avatar, Card} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Resto from '../../Helpers/Image/resto1.jpg';
+import OverlayItem from '../../Components/OverlayItem';
+import {getItemID} from '../../Redux/Action/ItemAction';
+import {useSelector, useDispatch} from 'react-redux';
+import formatRupiah from '../../Helpers/FormatRupiah';
 
 function Detail(props) {
+  const [isVisible, setHideVisible] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const {height, width} = Dimensions.get('window');
+  const {dataItemID} = useSelector(state => state.itemsData);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(getItemID(props.route.params.idItems));
+  }, []);
+
+  const handleAddToCart = () => {
+    setHideVisible(true);
+  };
+
   return (
     <View style={{flex: 1}}>
+      {isVisible && (
+        <OverlayItem
+          isVisible={isVisible}
+          setHideVisible={setHideVisible}
+          nameItem={props.route.params.nameItems}
+          imageItem={props.route.params.images}
+          priceItem={props.route.params.price}
+          idItem={props.route.params.idItems}
+        />
+      )}
       <View style={{flex: 1, marginBottom: -30}}>
         <Image
           // source={{
@@ -53,7 +80,7 @@ function Detail(props) {
         title="Order now"
         buttonStyle={style.button1}
         titleStyle={style.text1}
-        // onPress={this.overlay}
+        onPress={handleAddToCart}
       />
 
       <View
@@ -74,7 +101,7 @@ function Detail(props) {
             <Text style={style.titleDescript}>{props.route.params.desc}</Text>
             <View style={{alignSelf: 'center', marginTop: 10}}>
               <Text style={style.titlePrice}>
-                Rp. {props.route.params.price}
+                Rp.{formatRupiah(props.route.params.price)}
               </Text>
             </View>
           </View>
@@ -95,12 +122,12 @@ function Detail(props) {
           </View>
 
           <View style={{marginBottom: 50}}>
-            {/* {this.props.data_review &&
-              this.props.data_review.map((val, idx) => (
-                <Card containerStyle={style.containerCard}>
+            {dataItemID &&
+              dataItemID.review.map((val, idx) => (
+                <Card containerStyle={style.containerCard} key={idx}>
                   <View style={style.card}>
                     <Image
-                      source={{uri: `${BASE_URL}${val.images}`}}
+                      // source={{uri: `${BASE_URL}${val.images}`}}
                       style={style.imageUserResview}
                     />
                     <View style={{paddingRight: 120}}>
@@ -109,7 +136,7 @@ function Detail(props) {
                     </View>
                   </View>
                 </Card>
-              ))} */}
+              ))}
             <Input
               placeholder="comment ..."
               leftIcon={{type: 'font-awesome'}}
@@ -123,68 +150,6 @@ function Detail(props) {
           </View>
         </ScrollView>
       </View>
-
-      {/* <Overlay
-        isVisible={this.state.isVisible}
-        windowBackgroundColor="rgba(36, 36, 36, .8)"
-        overlayBackgroundColor="white"
-        width={300}
-        height={250}
-        borderRadius={20}
-        style={{padding: 20}}
-        overlayStyle={{padding: 20, paddingTop: 30}}>
-        <View style={{flexDirection: 'row'}}>
-          <Avatar
-            rounded
-            title="MD"
-            source={{
-              uri: `${BASE_URL}${this.props.navigation.state.params.images}`,
-            }}
-            containerStyle={{
-              marginHorizontal: 20,
-              marginLeft: 20,
-              marginTop: 30,
-              borderWidth: 6,
-              borderColor: '#f6f6f8',
-              elevation: 5,
-            }}
-            size={100}
-            title="MD"
-            containerStyle={{marginRight: 20}}
-          />
-          <View>
-            <Text style={style.nameItems}>
-              {this.props.navigation.state.params.nameItems}
-            </Text>
-            <Text style={style.prices}>
-              Rp.{this.props.navigation.state.params.price}
-            </Text>
-            <Input
-              keyboardType={'numeric'}
-              placeholder="Amount ..."
-              inputContainerStyle={style.inputs}
-              inputStyle={{fontSize: 15, marginLeft: 10}}
-              onChangeText={total_item => this.setState({total_item})}
-              value={this.state.total_item}
-            />
-          </View>
-        </View>
-
-        <View style={{flexDirection: 'row'}}>
-          <Button
-            title="Save"
-            buttonStyle={style.buttons}
-            titleStyle={style.texts}
-            onPress={this.handleSaveTocart}
-          />
-          <Button
-            title="Close"
-            buttonStyle={style.buttons2}
-            titleStyle={style.texts2}
-            onPress={this.OnHide}
-          />
-        </View>
-      </Overlay> */}
     </View>
   );
 }
@@ -264,6 +229,7 @@ const style = StyleSheet.create({
     height: 70,
     borderRadius: 100,
     marginRight: 20,
+    backgroundColor: '#d1d1d1',
   },
   buttonComment: {
     backgroundColor: 'transparent',
@@ -283,5 +249,8 @@ const style = StyleSheet.create({
     backgroundColor: '#fbaf02',
     alignSelf: 'center',
   },
-  text1: {color: 'black', fontWeight: 'bold', fontSize: 13},
+  text1: {color: 'black', fontWeight: 'bold', fontSize: 11},
+  card: {flexDirection: 'row'},
+  nameItem: {fontWeight: 'bold', fontSize: 18, marginTop: -5, color: '#666666'},
+  review: {fontSize: 12, marginTop: 4, color: 'grey'},
 });

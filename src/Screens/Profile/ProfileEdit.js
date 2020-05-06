@@ -7,10 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/FontAwesome5';
-import {Icon} from 'react-native-elements';
+import user from '../../Helpers/Image/users.png';
+import {useSelector} from 'react-redux';
 import {Avatar, Input, Button} from 'react-native-elements';
 
 function ProfileEdit(props) {
+  const {dataProfile} = useSelector(state => state.userData);
+  console.log(dataProfile);
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1, paddingTop: 20, paddingBottom: 50}}>
@@ -39,9 +43,12 @@ function ProfileEdit(props) {
                   <Avatar
                     rounded
                     icon={{name: 'home', type: 'font-awesome'}}
-                    // source={{
-                    //   uri: `${BASE_URL}${this.props.data_user.images}`,
-                    // }}
+                    // source={
+                    //   (dataProfile.image && {
+                    //     uri: dataProfile.image,
+                    //   }) ||
+                    //   user
+                    // }
                     size={120}
                     title="MD"
                     containerStyle={style.image}
@@ -59,7 +66,9 @@ function ProfileEdit(props) {
                     borderColor: '#ececf2',
                   }}
                 />
-                <Text style={style.textInput}>Herryheryanto</Text>
+                <Text style={style.textInput}>
+                  {dataProfile.name_user.substring(0, 15)}
+                </Text>
               </View>
               <View>
                 <Input
@@ -72,7 +81,9 @@ function ProfileEdit(props) {
                     borderColor: '#ececf2',
                   }}
                 />
-                <Text style={style.textInput}>Herryheryanto</Text>
+                <Text style={style.textInput}>
+                  {dataProfile.email.substring(0, 16)}
+                </Text>
               </View>
               <View>
                 <Input
@@ -85,7 +96,11 @@ function ProfileEdit(props) {
                     borderColor: '#ececf2',
                   }}
                 />
-                <Text style={style.textInput}>FrontEndDev</Text>
+                <Text style={style.textInput}>
+                  {dataProfile.work === null
+                    ? 'null'
+                    : dataProfile.work.substring(0, 16)}
+                </Text>
               </View>
               <View>
                 <Input
@@ -98,7 +113,11 @@ function ProfileEdit(props) {
                     borderColor: '#ececf2',
                   }}
                 />
-                <Text style={style.textInput}>Man</Text>
+                <Text style={style.textInput}>
+                  {dataProfile.gender === null
+                    ? 'null'
+                    : dataProfile.gender.substring(0, 16)}
+                </Text>
               </View>
               <View>
                 <Input
@@ -111,7 +130,11 @@ function ProfileEdit(props) {
                     borderColor: '#ececf2',
                   }}
                 />
-                <Text style={style.textInput}>Depok</Text>
+                <Text style={style.textInput}>
+                  {dataProfile.work === null
+                    ? 'null'
+                    : dataProfile.work.substring(0, 16)}
+                </Text>
               </View>
               <Button
                 title="Save"
@@ -156,7 +179,7 @@ const style = StyleSheet.create({
   },
   textInput: {
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 13,
     position: 'absolute',
     bottom: 0,
     right: 0,

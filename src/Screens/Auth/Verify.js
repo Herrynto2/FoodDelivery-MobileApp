@@ -1,24 +1,55 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import {Input, Button} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import Dot from '../../Helpers/Image/dot.png';
 import OverlaySuccess from '../../Components/OverlaySuccess';
 import Loader from '../../Components/Loader';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import * as Yup from 'yup';
+import CustomAlert from '../../Components/CustomAlert';
+import {patchData} from '../../Helpers/CRUD';
 
 function Verify(props) {
   const [isVisible, setHideVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
-  const handleVerify = () => {
-    setHideVisible(true);
-    setLoading(false);
-  };
+  const FormVerify = useFormik({
+    initialValues: {
+      code: '',
+    },
+    validationSchema: Yup.object({
+      code: Yup.string()
+        .required('code Is Required')
+        .length(7, 'Code Verify Only Have 7 Character'),
+    }),
+    onSubmit: async (values, form) => {
+      setLoading(true);
+      try {
+        const response = await patchData('verify?code=' + values.code);
+        if (response.data && response.data.success) {
+          form.setSubmitting(false);
+          form.resetForm();
+          console.log('res', response.data.success);
+          setHideVisible(true);
+        } else {
+          CustomAlert(response.data.success, response.data.msg);
+        }
+      } catch (err) {
+        // if (!(err.message === 'Network Error')) {
+        if (err.response) {
+          CustomAlert(err.response.data.success, err.response.data.msg);
+        }
+      }
+      setLoading(false);
+    },
+  });
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       {loading && <Loader loading={loading} setLoading={setLoading} />}
       {isVisible && (
         <OverlaySuccess
-          message={'Success to changes password'}
+          message={'Verification successfully'}
           isVisible={isVisible}
           setHideVisible={setHideVisible}
           onPressOk={() => {
@@ -26,7 +57,9 @@ function Verify(props) {
           }}
         />
       )}
-      <Input
+      <CustomInputText
+        form={FormVerify}
+        name="code"
         leftIcon={{type: 'font-awesome'}}
         inputContainerStyle={style.input}
         inputStyle={style.inputText}
@@ -40,7 +73,7 @@ function Verify(props) {
         title="Verify"
         buttonStyle={style.button1}
         titleStyle={style.text1}
-        onPress={handleVerify}
+        onPress={FormVerify.handleSubmit}
       />
     </View>
   );

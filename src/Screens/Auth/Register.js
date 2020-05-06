@@ -12,14 +12,61 @@ import {Input, Button} from 'react-native-elements';
 import Regist from '../../Helpers/Image/signup.png';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Loader from '../../Components/Loader';
+import {useDispatch} from 'react-redux';
+import {userRegister} from '../../Redux/Action/userDataAction';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import * as Yup from 'yup';
+import CustomAlert from '../../Components/CustomAlert';
 
 function Register(props) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
 
-  const handleRegister = () => {
-    setLoading(true);
-  };
+  const dispatch = useDispatch();
+  const FormRegister = useFormik({
+    initialValues: {
+      username: '',
+      email: '',
+      password: '',
+      name: '',
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .min(6, 'name Must have More Than 6 character')
+        .required('name Is Required'),
+      username: Yup.string()
+        .min(8, 'Username Must have More Than 8 character')
+        .required('Username Is Required'),
+      email: Yup.string()
+        .email('Enter Valid Email')
+        .required('Email is Required'),
+      password: Yup.string()
+        .min(6, 'Password Must have More Than 6 Character')
+        .required('Passoword Is Required'),
+    }),
+    onSubmit: async (values, form) => {
+      setLoading(true);
+      try {
+        const response = await dispatch(userRegister(values));
+        if (response.data && response.data.success) {
+          form.setSubmitting(false);
+          form.resetForm();
+          CustomAlert(response.data.success, response.data.msg, () =>
+            props.navigation.navigate('Verify', {email: values.email}),
+          );
+        } else {
+          CustomAlert(response.data.success, response.data.msg);
+        }
+      } catch (err) {
+        // if (!(err.message === 'Network Error')) {
+        if (err.response) {
+          CustomAlert(err.response.data.success, err.response.data.msg);
+        }
+      }
+      setLoading(false);
+    },
+  });
 
   return (
     <View style={style.container}>
@@ -35,24 +82,26 @@ function Register(props) {
             marginBottom: 60,
           }}
         />
-        <Input
+        <CustomInputText
+          form={FormRegister}
+          name="name"
           placeholder="name"
           leftIcon={{type: 'font-awesome'}}
           inputContainerStyle={style.input}
-          onChangeText={name => this.setState({name})}
           inputStyle={style.inputText}
-          // value={this.state.name}
         />
-        <Input
+        <CustomInputText
+          form={FormRegister}
+          name="username"
           placeholder="username"
           leftIcon={{type: 'font-awesome'}}
           inputContainerStyle={style.input}
           inputStyle={style.inputText}
-          // onChangeText={username => this.setState({username})}
-          // value={this.state.username}
         />
 
-        <Input
+        <CustomInputText
+          form={FormRegister}
+          name="password"
           secureTextEntry={hidePassword ? true : false}
           placeholder="password"
           rightIcon={
@@ -69,32 +118,20 @@ function Register(props) {
           inputStyle={{...style.inputText, marginLeft: 15}}
         />
 
-        <Input
+        <CustomInputText
+          form={FormRegister}
+          name="email"
           placeholder="email"
           leftIcon={{type: 'font-awesome'}}
           inputContainerStyle={style.input}
           inputStyle={style.inputText}
-          // onChangeText={email => this.setState({email})}
-          // value={this.state.email}
         />
         <Button
           title="Sign Up"
           buttonStyle={style.button1}
           titleStyle={style.text1}
-          onPress={handleRegister}
+          onPress={FormRegister.handleSubmit}
         />
-        {/* <View style={{flexDirection: 'row'}}>
-          <Button
-            title="Google"
-            buttonStyle={style.buttons}
-            titleStyle={style.texts}
-          />
-          <Button
-            title="Facebook"
-            buttonStyle={style.buttons2}
-            titleStyle={style.texts2}
-          />
-        </View> */}
       </ScrollView>
     </View>
   );

@@ -50,8 +50,8 @@ export const submitData = async (dataUrl, formData) => {
 
 export const patchData = async (dataUrl, formData) => {
   try {
-    checkConnection();
-    const url = BASE_URL + dataUrl;
+    // checkConnection();
+    const url = `http://192.168.43.51:3005/` + dataUrl;
     const response = await axios.patch(url, formData, getConfig());
     return response;
   } catch (err) {

@@ -14,6 +14,7 @@ import {Card} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {getRestaurantID} from '../../Redux/Action/restaurantAction';
 import {useSelector, useDispatch} from 'react-redux';
+import formatRupiah from '../../Helpers/FormatRupiah';
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 
 function RestaurantDetail(props) {
@@ -115,7 +116,9 @@ function RestaurantDetail(props) {
                         marginTop: 5,
                         marginBottom: 3,
                       }}>
-                      <Text style={style.titlePrice}>Rp. {item.price}</Text>
+                      <Text style={style.titlePrice}>
+                        Rp.{formatRupiah(item.price)}
+                      </Text>
                     </View>
                   </Card>
                 </TouchableOpacity>

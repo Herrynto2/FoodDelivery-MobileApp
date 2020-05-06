@@ -5,7 +5,7 @@ import ImgLogin from '../../Helpers/Image/signins.png';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Loader from '../../Components/Loader';
 import {useDispatch} from 'react-redux';
-import {userLogin} from '../../Redux/Action/userDataAction';
+import {userLogin, updateProfile} from '../../Redux/Action/userDataAction';
 import {useFormik} from 'formik';
 import CustomInputText from '../../Components/CustomInputText';
 import * as Yup from 'yup';
@@ -26,7 +26,6 @@ function Login(props) {
       setLoading(true);
       try {
         const response = await dispatch(userLogin(values));
-        console.log(response.data);
         if (response.data && !response.data.success) {
           CustomAlert(response.data.success, response.data.msg);
         }
@@ -36,7 +35,6 @@ function Login(props) {
         if (err.response) {
           CustomAlert(err.response.data.success, err.response.data.msg);
         }
-        // }
       }
       setLoading(false);
     },

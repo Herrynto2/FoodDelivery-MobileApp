@@ -9,8 +9,50 @@ import {
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import {Avatar, Input, Button, Overlay} from 'react-native-elements';
 import Topups from '../../Helpers/Image/topup.png';
+import formatRupiah from '../../Helpers/FormatRupiah';
+import {useSelector, useDispatch} from 'react-redux';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import * as Yup from 'yup';
+import CustomAlert from '../../Components/CustomAlert';
+import {topUp, getProfile} from '../../Redux/Action/userDataAction';
 
 function Topup(props) {
+  const {dataUser} = useSelector(state => state.userData);
+  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
+
+  const handleTopup = useFormik({
+    initialValues: {
+      saldo: '',
+    },
+    validationSchema: Yup.object({
+      saldo: Yup.number()
+        .required('Required Nominal')
+        .min(10000, 'Nominal Topup Must be Greather than or equal 10.000'),
+    }),
+    onSubmit: async (values, form) => {
+      setLoading(true);
+      try {
+        const response = await dispatch(topUp(values));
+        if (response.msg && response.success) {
+          dispatch(getProfile());
+          form.setSubmitting(false);
+          form.resetForm();
+          CustomAlert(response.success, response.msg);
+        } else {
+          CustomAlert(response.success, response.msg);
+        }
+      } catch (err) {
+        // if (!(err.message === 'Network Error')) {
+        if (err.response) {
+          CustomAlert(err.response.success, err.response.msg);
+        }
+      }
+      setLoading(false);
+    },
+  });
+
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <View style={{flex: 1, paddingTop: 20, marginBottom: 10}}>
@@ -34,7 +76,9 @@ function Topup(props) {
             <View style={{alignItems: 'center', marginTop: 50}}>
               <Text style={style.textBalance}>Balance</Text>
             </View>
-            <Text style={style.textValue}>Rp. 20.000</Text>
+            <Text style={style.textValue}>
+              Rp. {formatRupiah(dataUser.Saldo)}
+            </Text>
             <Avatar
               rounded
               source={Topups}
@@ -42,7 +86,9 @@ function Topup(props) {
               containerStyle={{marginLeft: 25, marginTop: 20, marginLeft: 30}}
             />
 
-            <Input
+            <CustomInputText
+              form={handleTopup}
+              name="saldo"
               keyboardType={'numeric'}
               placeholder="Value ..."
               inputContainerStyle={style.input}
@@ -51,10 +97,12 @@ function Topup(props) {
             />
 
             <Button
-              title="Topup"
+              title="Top Up"
+              disabled={loading === true ? true : false}
               buttonStyle={style.button1}
-              titleStyle={style.text1}
-              // onPress={this.handleTopup}
+              styleText={style.text1}
+              loading={loading}
+              onPress={handleTopup.handleSubmit}
             />
           </ScrollView>
         </View>
