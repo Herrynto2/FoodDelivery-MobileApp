@@ -16,7 +16,6 @@ export default function restaurantData(state = initialState, action) {
         ...state,
         dataRestaurantID: action.data,
       };
-
     default:
       return state;
   }

@@ -3,12 +3,16 @@ import {
   USER_LOGOUT,
   UPDATE_PROFILE,
   GET_PROFILE,
+  USER_RESTAURANT,
+  USER_ITEM,
 } from '../Action/actionTypes';
 const initialState = {
   token: '',
   isLogin: false,
   dataProfile: {},
   dataUser: {},
+  dataProfileResto: {},
+  dataItem: [],
 };
 
 export default function userData(state = initialState, action) {
@@ -31,6 +35,16 @@ export default function userData(state = initialState, action) {
       return {
         ...state,
         dataUser: action.payload,
+      };
+    case USER_RESTAURANT:
+      return {
+        ...state,
+        dataProfileResto: action.payload,
+      };
+    case USER_ITEM:
+      return {
+        ...state,
+        dataItem: action.payload,
       };
     default:
       return state;

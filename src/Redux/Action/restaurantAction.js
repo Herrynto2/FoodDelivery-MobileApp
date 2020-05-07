@@ -1,4 +1,8 @@
-import {BROWSE_RESTAURANT, DETAIL_RESTAURANT} from './actionTypes';
+import {
+  BROWSE_RESTAURANT,
+  DETAIL_RESTAURANT,
+  USER_RESTAURANT,
+} from './actionTypes';
 import {getData} from '../../Helpers/CRUD';
 
 export const getRestaurant = () => async dispatch => {
@@ -35,13 +39,13 @@ export const getRestaurantID = id => async dispatch => {
   }
 };
 
-export const restaurantAdmin = () => async dispatch => {
+export const profileRestoUser = () => async dispatch => {
   try {
-    const response = await getData('restaurant');
-    if (response.data && response.data.success) {
+    const response = await getData(`restaurant`);
+    if (response.data) {
       await dispatch({
-        type: BROWSE_RESTAURANT,
-        payload: response.data.data,
+        type: USER_RESTAURANT,
+        payload: response.data.data[0],
       });
     }
     return response;

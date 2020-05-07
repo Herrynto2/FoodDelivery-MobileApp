@@ -3,6 +3,7 @@ import {
   DETAIL_ITEM,
   BROWSE_DRINK,
   BROWSE_FOOD,
+  USER_ITEM,
 } from './actionTypes';
 import {getData} from '../../Helpers/CRUD';
 
@@ -63,6 +64,23 @@ export const getItemDrink = () => async dispatch => {
     if (response.data && response.data.success) {
       await dispatch({
         type: BROWSE_DRINK,
+        payload: response.data.data,
+      });
+    }
+    return response;
+  } catch (err) {
+    // if (!(err.message === 'Network Error')) {
+    //   throw err;
+    // }
+  }
+};
+
+export const itemRestoUser = () => async dispatch => {
+  try {
+    const response = await getData(`items`);
+    if (response.data) {
+      await dispatch({
+        type: USER_ITEM,
         payload: response.data.data,
       });
     }
