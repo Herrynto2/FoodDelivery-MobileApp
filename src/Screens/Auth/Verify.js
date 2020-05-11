@@ -30,7 +30,6 @@ function Verify(props) {
         if (response.data && response.data.success) {
           form.setSubmitting(false);
           form.resetForm();
-          console.log('res', response.data.success);
           setHideVisible(true);
         } else {
           CustomAlert(response.data.success, response.data.msg);

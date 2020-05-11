@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Input, Overlay, Button, Avatar, Card} from 'react-native-elements';
+import {Button, Card} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Resto from '../../Helpers/Image/resto1.jpg';
@@ -16,6 +16,12 @@ import OverlayItem from '../../Components/OverlayItem';
 import {getItemID} from '../../Redux/Action/ItemAction';
 import {useSelector, useDispatch} from 'react-redux';
 import formatRupiah from '../../Helpers/FormatRupiah';
+import {submitData} from '../../Helpers/CRUD';
+import CustomAlert from '../../Components/CustomAlert';
+import {useFormik} from 'formik';
+import CustomInputText from '../../Components/CustomInputText';
+import API_URL from '../../Components/Dotenv';
+import user from '../../Helpers/Image/users.png';
 
 function Detail(props) {
   const [isVisible, setHideVisible] = React.useState(false);
@@ -32,6 +38,40 @@ function Detail(props) {
     setHideVisible(true);
   };
 
+  const handleComment = useFormik({
+    initialValues: {
+      review: '',
+    },
+    onSubmit: async (values, form) => {
+      console.log(values);
+      if (values.review === '') {
+        console.log('blank');
+      } else {
+        try {
+          setLoading(true);
+          const response = await submitData(
+            `review/${props.route.params.idItems}`,
+            values,
+          );
+          console.log(response.data);
+          if (response.data && response.data.success) {
+            dispatch(getItemID(props.route.params.idItems));
+            form.setSubmitting(false);
+            form.resetForm();
+          } else {
+            CustomAlert(response.data.success, response.data.msg);
+          }
+        } catch (err) {
+          // if (!(err.message === 'Network Error')) {
+          if (err.response) {
+            CustomAlert(err.response.data.success, err.response.data.msg);
+          }
+        }
+        setLoading(false);
+      }
+    },
+  });
+
   return (
     <View style={{flex: 1}}>
       {isVisible && (
@@ -46,9 +86,9 @@ function Detail(props) {
       )}
       <View style={{flex: 1, marginBottom: -30}}>
         <Image
-          // source={{
-          //   uri: `${BASE_URL}${this.props.navigation.state.params.images}`,
-          // }}
+          source={{
+            uri: `${API_URL}${props.route.params.images}`,
+          }}
           style={{width: null, height: 250, backgroundColor: '#d1d1d1'}}
         />
 
@@ -127,7 +167,12 @@ function Detail(props) {
                 <Card containerStyle={style.containerCard} key={idx}>
                   <View style={style.card}>
                     <Image
-                      // source={{uri: `${BASE_URL}${val.images}`}}
+                      source={
+                        (val.images && {
+                          uri: API_URL + val.images,
+                        }) ||
+                        user
+                      }
                       style={style.imageUserResview}
                     />
                     <View style={{paddingRight: 120}}>
@@ -137,15 +182,18 @@ function Detail(props) {
                   </View>
                 </Card>
               ))}
-            <Input
+            <CustomInputText
+              form={handleComment}
+              name="review"
               placeholder="comment ..."
               leftIcon={{type: 'font-awesome'}}
               inputContainerStyle={style.input}
             />
             <Button
-              // onPress={this.handleComment}
-              icon={<Icon name="paper-plane" size={16} color="grey" />}
+              icon={<Icon name="paper-plane" size={20} color="grey" />}
               buttonStyle={style.buttonComment}
+              onPress={handleComment.handleSubmit}
+              loading={loading}
             />
           </View>
         </ScrollView>
@@ -156,6 +204,10 @@ function Detail(props) {
 export default Detail;
 
 const style = StyleSheet.create({
+  input: {
+    width: 320,
+    alignSelf: 'center',
+  },
   container: {
     flexDirection: 'row',
     position: 'absolute',
@@ -233,10 +285,11 @@ const style = StyleSheet.create({
   },
   buttonComment: {
     backgroundColor: 'transparent',
-    width: 30,
+    width: 40,
     height: 30,
-    marginTop: -50,
-    marginLeft: 300,
+    marginTop: -40,
+    marginLeft: 290,
+    marginBottom: 50,
   },
   button1: {
     marginTop: -20,

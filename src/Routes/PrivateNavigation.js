@@ -15,11 +15,28 @@ import ProductNavigation from './Components/ProductNavigation';
 import Food from '../Screens/Item/Food';
 import Drink from '../Screens/Item/Drink';
 import Items from '../Screens/Item/Items';
+import ItemCreate from '../Screens/Profile/Components/ItemCreate';
+import RestaurantCreate from '../Screens/Profile/Components/RestaurantCreate';
+import ItemSearch from '../Screens/Item/ItemSearch';
+import {itemRestoUser} from '../Redux/Action/ItemAction';
+import {profileRestoUser} from '../Redux/Action/restaurantAction';
+import {getProfile} from '../Redux/Action/userDataAction';
+import {getCart} from '../Redux/Action/cartAction';
+import {useDispatch} from 'react-redux';
 
 YellowBox.ignoreWarnings([`Warning: Can't perform a React state`]);
 
 function PrivateNavigation(props) {
   const Stack = createStackNavigator();
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(profileRestoUser());
+    dispatch(itemRestoUser());
+    dispatch(getProfile());
+    dispatch(getCart());
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -39,6 +56,9 @@ function PrivateNavigation(props) {
       <Stack.Screen name="Food" component={Food} />
       <Stack.Screen name="Drink" component={Drink} />
       <Stack.Screen name="Items" component={Items} />
+      <Stack.Screen name="RestaurantCreate" component={RestaurantCreate} />
+      <Stack.Screen name="ItemCreate" component={ItemCreate} />
+      <Stack.Screen name="ItemSearch" component={ItemSearch} />
     </Stack.Navigator>
   );
 }

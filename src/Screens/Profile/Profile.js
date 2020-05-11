@@ -4,9 +4,11 @@ import {Icon, Avatar} from 'react-native-elements';
 import Icons from 'react-native-vector-icons/FontAwesome5';
 import {useSelector} from 'react-redux';
 import user from '../../Helpers/Image/users.png';
+import API_URL from '../../Components/Dotenv';
 
 function Profile(props) {
   const {dataProfile} = useSelector(state => state.userData);
+  console.log(API_URL + dataProfile.images);
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -17,8 +19,8 @@ function Profile(props) {
             <Avatar
               rounded
               source={
-                (dataProfile.image && {
-                  uri: dataProfile.image,
+                (dataProfile.images && {
+                  uri: API_URL + dataProfile.images,
                 }) ||
                 user
               }

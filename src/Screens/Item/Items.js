@@ -14,6 +14,7 @@ import {getItems} from '../../Redux/Action/ItemAction';
 import {useSelector, useDispatch} from 'react-redux';
 import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
 import formatRupiah from '../../Helpers/FormatRupiah';
+import API_URL from '../../Components/Dotenv';
 
 function Items(props) {
   const {dataItems} = useSelector(state => state.itemsData);
@@ -29,16 +30,20 @@ function Items(props) {
         <View style={{flexDirection: 'row'}}>
           <View style={style.boxSearch}>
             <View style={style.bgSearch}>
-              <Icon name="ios-search" size={25} style={style.iconSearch} />
-              <Input
-                placeholder="Search ..."
-                placeholderTextColor="grey"
-                style={style.searchStyle}
-                inputContainerStyle={{
-                  borderBottomWidth: 0,
-                  borderBottomColor: 'transparent',
-                }}
-              />
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('ItemSearch')}
+                style={{width: '100%'}}>
+                <Icon name="ios-search" size={25} style={style.iconSearch} />
+                <Input
+                  // placeholder="Search ..."
+                  placeholderTextColor="grey"
+                  style={style.searchStyle}
+                  inputContainerStyle={{
+                    borderBottomWidth: 0,
+                    borderBottomColor: 'transparent',
+                  }}
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <TouchableOpacity
@@ -96,7 +101,7 @@ function Items(props) {
                   }>
                   <Card containerStyle={style.containerCard}>
                     <Image
-                      // source={{uri: `${BASE_URL}${item.images}`}}
+                      source={{uri: `${API_URL}${item.images}`}}
                       style={style.imageItem}
                     />
                     <Text style={style.titleName}>{item.name_item}</Text>
@@ -220,7 +225,7 @@ const style = StyleSheet.create({
     flex: 9,
     paddingHorizontal: 5,
     paddingTop: 30,
-    paddingBottom: 5,
+    paddingBottom: 80,
     paddingLeft: 12,
     borderRadius: 50,
     marginBottom: -20,

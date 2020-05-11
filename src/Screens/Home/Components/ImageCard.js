@@ -1,12 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import API_URL from '../../../Components/Dotenv';
 
 function ImageCard(props) {
   return (
     <View style={style.container}>
       <View style={{flex: 2}}>
         <Image
-          //   source={{uri: `${BASE_URL}${this.props.imageUri}`}}
+          source={{uri: `${API_URL}${props.imageUri}`}}
           style={style.images}
         />
       </View>

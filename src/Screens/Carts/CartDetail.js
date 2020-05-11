@@ -13,27 +13,31 @@ import Icons from 'react-native-vector-icons/FontAwesome5';
 import formatRupiah from '../../Helpers/FormatRupiah';
 import Loader from '../../Components/Loader';
 import {submitData} from '../../Helpers/CRUD';
+import API_URL from '../../Components/Dotenv';
+import CustomAlert from '../../Components/CustomAlert';
+import {getCart} from '../../Redux/Action/cartAction';
+import {useSelector, useDispatch} from 'react-redux';
 
 function CartDetail(props) {
   const [amount, setAmount] = React.useState(props.route.params.total);
   const [checkout, setCheckout] = React.useState(
     amount * props.route.params.price,
   );
-  const [price, setPrice] = React.useState('');
+  const [price, setPrice] = React.useState(props.route.params.price);
   const [loading, setLoading] = React.useState(false);
-  console.log(amount + 1);
+  const dispatch = useDispatch();
 
   const handleAdd = () => {
     const addValue = amount + 1;
-    // const total = price;
-    // const result = parseInt(checkout) + parseInt(total);
+    const total = price;
+    const result = parseInt(checkout) + parseInt(total);
     setAmount(addValue);
-    // setCheckout(result);
+    setCheckout(result);
   };
   const handleMinus = () => {
     const addValue = amount - 1;
     const total = price;
-    const result = parseInt(checkout) + parseInt(total);
+    const result = parseInt(checkout) - parseInt(total);
     setAmount(addValue);
     setCheckout(result);
   };
@@ -41,10 +45,19 @@ function CartDetail(props) {
   const handleCheckout = async () => {
     setLoading(true);
     try {
-      const response = await submitData(`carts/${props.idItems}`, values);
+      const values = {
+        total_item: amount,
+      };
+      const response = await submitData(
+        `checkout/${props.route.params.idItems}`,
+        values,
+      );
       console.log(response.data);
       if (response.data && response.data.success) {
-        props.setHideVisible(false);
+        dispatch(getCart());
+        CustomAlert(response.data.success, response.data.msg, () =>
+          props.navigation.navigate('Carts'),
+        );
       } else {
         CustomAlert(response.data.success, response.data.msg);
       }
@@ -59,11 +72,12 @@ function CartDetail(props) {
 
   return (
     <View style={{flex: 1}}>
+      {loading && <Loader loading={loading} setLoading={setLoading} />}
       <View style={{flex: 1, marginBottom: -30}}>
         <Image
-          // source={{
-          //   uri: `${BASE_URL}${this.props.navigation.state.params.images}`,
-          // }}
+          source={{
+            uri: `${API_URL}${props.route.params.images}`,
+          }}
           style={style.imageItem}
         />
 

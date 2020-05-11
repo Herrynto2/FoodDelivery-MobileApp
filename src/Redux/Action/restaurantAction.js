@@ -45,7 +45,7 @@ export const profileRestoUser = () => async dispatch => {
     if (response.data) {
       await dispatch({
         type: USER_RESTAURANT,
-        payload: response.data.data[0],
+        payload: response.data.data,
       });
     }
     return response;

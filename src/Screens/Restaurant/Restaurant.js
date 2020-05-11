@@ -12,6 +12,7 @@ import Icons from 'react-native-vector-icons/FontAwesome5';
 import {getRestaurant} from '../../Redux/Action/restaurantAction';
 import {useSelector, useDispatch} from 'react-redux';
 import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
+import API_URL from '../../Components/Dotenv';
 
 function Restaurant(props) {
   const {dataRestaurant} = useSelector(state => state.restaurantData);
@@ -60,7 +61,7 @@ function Restaurant(props) {
                 }>
                 <View style={style.card}>
                   <Image
-                    // source={{uri: `${BASE_URL}${item.logo}`}}
+                    source={{uri: `${API_URL}${item.logo}`}}
                     style={style.ImageResto}
                   />
                   <Text style={style.textName}>

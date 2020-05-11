@@ -24,6 +24,8 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import ImageCard from './Components/ImageCard';
 import formatRupiah from '../../Helpers/FormatRupiah';
+import API_URL from '../../Components/Dotenv';
+
 YellowBox.ignoreWarnings(['Warning: Failed child context type']);
 
 function Home(props) {
@@ -46,12 +48,12 @@ function Home(props) {
         <View style={{flex: 1, marginBottom: 80}}>
           <View style={style.boxSearch}>
             <View style={style.bgSearch}>
-              <Icons name="ios-search" size={25} style={style.iconSearch} />
-              <Input
-                placeholder="Search ..."
-                placeholderTextColor="white"
-                style={style.searchInput}
-              />
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('ItemSearch')}
+                style={{width: '100%'}}>
+                <Icons name="ios-search" size={25} style={style.iconSearch} />
+                <Input placeholderTextColor="white" style={style.searchInput} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -160,7 +162,7 @@ function Home(props) {
                     <View style={style.card}>
                       <View style={{elevation: 4, shadowColor: 'black'}}>
                         <Image
-                          // source={{uri: `${BASE_URL}${item.images}`}}
+                          source={{uri: `${API_URL}${item.images}`}}
                           style={style.Images}
                         />
                       </View>

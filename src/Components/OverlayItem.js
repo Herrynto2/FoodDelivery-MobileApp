@@ -6,6 +6,7 @@ import CustomAlert from '../Components/CustomAlert';
 import {useFormik} from 'formik';
 import CustomInputText from '../Components/CustomInputText';
 import * as Yup from 'yup';
+import API_URL from './Dotenv';
 
 YellowBox.ignoreWarnings(['Warning: componentWillReceiveProps']);
 
@@ -57,9 +58,9 @@ function OverlayItem(props) {
             <Avatar
               rounded
               title="MD"
-              // source={{
-              //   uri: `${BASE_URL}${this.props.navigation.state.params.images}`,
-              // }}
+              source={{
+                uri: `${API_URL}${props.imageItem}`,
+              }}
               containerStyle={style.containerAvatar}
               size={100}
               title="MD"

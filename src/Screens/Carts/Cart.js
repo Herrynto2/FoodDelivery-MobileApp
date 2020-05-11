@@ -13,8 +13,12 @@ import {getCart} from '../../Redux/Action/cartAction';
 import {useSelector, useDispatch} from 'react-redux';
 import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
 import formatRupiah from '../../Helpers/FormatRupiah';
+import {deleteData} from '../../Helpers/CRUD';
+import Loader from '../../Components/Loader';
+import API_URL from '../../Components/Dotenv';
 
 function Carts(props) {
+  const [loading, setLoading] = React.useState(false);
   const {dataCart} = useSelector(state => state.cartData);
   const dispatch = useDispatch();
 
@@ -24,25 +28,26 @@ function Carts(props) {
 
   const deleteItems = async id => {
     setLoading(true);
-    // try {
-    //   const response = await submitData(`carts/${props.idItem}`, values);
-    //   console.log(response.data);
-    //   if (response.data && response.data.success) {
-    //     props.setHideVisible(false);
-    //   } else {
-    //     CustomAlert(response.data.success, response.data.msg);
-    //   }
-    // } catch (err) {
-    //   // if (!(err.message === 'Network Error')) {
-    //   if (err.response) {
-    //     CustomAlert(err.response.data.success, err.response.data.msg);
-    //   }
-    // }
-    // setLoading(false);
+    try {
+      const response = await deleteData(`carts/${id}`);
+      console.log(response.data);
+      if (response.data && response.data.success) {
+        dispatch(getCart());
+      } else {
+        CustomAlert(response.data.success, response.data.msg);
+      }
+    } catch (err) {
+      // if (!(err.message === 'Network Error')) {
+      if (err.response) {
+        CustomAlert(err.response.data.success, err.response.data.msg);
+      }
+    }
+    setLoading(false);
   };
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
+      {loading && <Loader loading={loading} setLoading={setLoading} />}
       <View style={style.containerHeader}>
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
@@ -72,7 +77,7 @@ function Carts(props) {
                     <Avatar
                       rounded
                       icon={{name: 'home', type: 'font-awesome'}}
-                      // source={{uri: `${BASE_URL}${item.images}`}}
+                      source={{uri: `${API_URL}${item.images}`}}
                       size={120}
                       title=" "
                       containerStyle={style.containerAvatar}

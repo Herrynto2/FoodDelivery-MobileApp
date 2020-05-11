@@ -3,37 +3,36 @@ import {
   View,
   Text,
   ScrollView,
-  Dimensions,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {
-  Avatar,
-  ListItem,
-  Image,
-  Overlay,
-  Input,
-  Button,
-} from 'react-native-elements';
+import {Avatar, ListItem, Image, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Icons from 'react-native-vector-icons/Ionicons';
-import Delete from '../../Helpers/Image/delete.png';
 import user from '../../Helpers/Image/users.png';
 import {profileRestoUser} from '../../Redux/Action/restaurantAction';
 import {itemRestoUser} from '../../Redux/Action/ItemAction';
 import {useSelector, useDispatch} from 'react-redux';
 import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
 import cartEmpty from '../../Helpers/Image/cartEmpty.png';
+import ItemCreate from './Components/ItemCreate';
+import RestaurantCreate from './Components/RestaurantCreate';
+import API_URL from '../../Components/Dotenv';
 
 function Admin(props) {
   const [available, setAvailable] = React.useState(false);
-  const {dataProfileResto, dataItem} = useSelector(state => state.userData);
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible2, setIsVisible2] = React.useState(false);
+  const {dataProfileResto, dataItem, dataProfile} = useSelector(
+    state => state.userData,
+  );
   const dispatch = useDispatch();
+  console.log(API_URL + dataProfileResto[0].logo);
 
   React.useEffect(() => {
     dispatch(profileRestoUser());
     dispatch(itemRestoUser());
-    if (dataProfileResto.length !== 0) {
+    if (dataProfileResto && dataProfileResto.length !== 0) {
       setAvailable(true);
     } else {
       setAvailable(false);
@@ -42,11 +41,20 @@ function Admin(props) {
 
   return (
     <View style={{flex: 1}}>
+      {isVisible && (
+        <ItemCreate isVisible={isVisible} setHideVisible={setIsVisible} />
+      )}
+      {isVisible2 && (
+        <RestaurantCreate
+          isVisible={isVisible2}
+          setHideVisible={setIsVisible2}
+        />
+      )}
       <View style={{flex: 1, backgroundColor: 'white'}}>
         {available && (
           <Image
-            // source={{uri: `${BASE_URL}${dataProfileResto[0].logo}`}}
-            style={{width: null, height: 280, backgroundColor: '#d1d1d1'}}
+            source={{uri: `${API_URL}${dataProfileResto[0].logo}`}}
+            style={{width: null, height: 280}}
           />
         )}
 
@@ -88,7 +96,7 @@ function Admin(props) {
           <ScrollView>
             <View style={{paddingHorizontal: 25}}>
               <Text style={style.textNameResto}>
-                {dataProfileResto.name_restaurant}
+                {dataProfileResto[0].name_restaurant}
               </Text>
               <View
                 style={{
@@ -101,11 +109,13 @@ function Admin(props) {
                   size={20}
                   style={{color: '#afaaaa', marginRight: 10}}
                 />
-                <Text style={style.textLoc}>{dataProfileResto.location}</Text>
+                <Text style={style.textLoc}>
+                  {dataProfileResto[0].location}
+                </Text>
               </View>
               <View style={{alignItems: 'center', marginTop: 10}}>
                 <Text style={style.textOwner}>
-                  {dataProfileResto.created_by}
+                  {dataProfileResto[0].created_by}
                 </Text>
               </View>
             </View>
@@ -117,9 +127,9 @@ function Admin(props) {
                   <Avatar
                     rounded
                     source={
-                      // (dataProfile.image && {
-                      //   uri: dataProfile.image,
-                      // }) ||
+                      (dataProfile.images && {
+                        uri: API_URL + dataProfile.images,
+                      }) ||
                       user
                     }
                     size={100}
@@ -134,7 +144,7 @@ function Admin(props) {
             </View>
             <View style={{paddingHorizontal: 20}}>
               <Text style={style.textDescr}>
-                {dataProfileResto.description}
+                {dataProfileResto[0].description}
               </Text>
             </View>
 
@@ -145,7 +155,7 @@ function Admin(props) {
               <View style={{flexDirection: 'row'}}>
                 <Text style={style.total}>{dataItem.length} Item</Text>
                 <TouchableOpacity
-                  // onPress={overlay}
+                  onPress={() => setIsVisible(true)}
                   style={style.touchIcon}>
                   <Icon
                     name="plus-circle"
@@ -170,7 +180,9 @@ function Admin(props) {
                               </Text>
                             </View>
                             <View>
-                              <Text style={style.desc}>{item.description}</Text>
+                              <Text style={style.desc}>
+                                {item.description.substring(0, 60)}
+                              </Text>
                             </View>
                             <View style={{flexDirection: 'row'}}>
                               <TouchableOpacity style={style.touchDel}>
@@ -194,11 +206,9 @@ function Admin(props) {
                           </View>
                         }
                         bottomDivider
-                        leftAvatar={
-                          {
-                            // source: {uri: `${BASE_URL}${item.images}`}
-                          }
-                        }
+                        leftAvatar={{
+                          source: {uri: `${API_URL}${item.images}`},
+                        }}
                       />
                     ))}
                 </>
@@ -222,6 +232,7 @@ function Admin(props) {
               title="Join us"
               buttonStyle={style.buttons}
               titleStyle={style.texts}
+              onPress={() => setIsVisible2(true)}
             />
           </View>
         )}

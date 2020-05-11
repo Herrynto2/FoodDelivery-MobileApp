@@ -10,10 +10,12 @@ import {useFormik} from 'formik';
 import CustomInputText from '../../Components/CustomInputText';
 import * as Yup from 'yup';
 import CustomAlert from '../../Components/CustomAlert';
+import API_URL from '../../Components/Dotenv';
 
 function Login(props) {
   const [hidePassword, setHidePassword] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
+  console.log(API_URL);
 
   const dispatch = useDispatch();
   const FormLogin = useFormik({

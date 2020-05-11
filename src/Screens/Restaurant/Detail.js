@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import {getRestaurantID} from '../../Redux/Action/restaurantAction';
 import {useSelector, useDispatch} from 'react-redux';
 import formatRupiah from '../../Helpers/FormatRupiah';
+import API_URL from '../../Components/Dotenv';
 YellowBox.ignoreWarnings(['VirtualizedLists should never be nested']);
 
 function RestaurantDetail(props) {
@@ -29,9 +30,9 @@ function RestaurantDetail(props) {
     <View style={{flex: 1}}>
       <View style={{flex: 1, marginBottom: -10}}>
         <Image
-          // source={{
-          //   uri: `${BASE_URL}${ props.route.params.picture}`,
-          // }}
+          source={{
+            uri: `${API_URL}${props.route.params.picture}`,
+          }}
           style={style.imageResto}
         />
 
@@ -106,7 +107,7 @@ function RestaurantDetail(props) {
                   }>
                   <Card containerStyle={style.card}>
                     <Image
-                      // source={{uri: `${BASE_URL}${item.images}`}}
+                      source={{uri: `${API_URL}${item.images}`}}
                       style={style.imageItems}
                     />
                     <Text style={style.titleNameItem}>{item.name_item}</Text>

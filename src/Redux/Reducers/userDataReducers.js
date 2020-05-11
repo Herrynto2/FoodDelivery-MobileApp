@@ -11,7 +11,7 @@ const initialState = {
   isLogin: false,
   dataProfile: {},
   dataUser: {},
-  dataProfileResto: {},
+  dataProfileResto: [],
   dataItem: [],
 };
 
