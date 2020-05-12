@@ -2,7 +2,6 @@ import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {Button} from 'react-native-elements';
 import Dot from '../../Helpers/Image/dot.png';
-import OverlaySuccess from '../../Components/OverlaySuccess';
 import Loader from '../../Components/Loader';
 import {useFormik} from 'formik';
 import CustomInputText from '../../Components/CustomInputText';
@@ -11,7 +10,6 @@ import CustomAlert from '../../Components/CustomAlert';
 import {patchData} from '../../Helpers/CRUD';
 
 function Verify(props) {
-  const [isVisible, setHideVisible] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const FormVerify = useFormik({
@@ -30,7 +28,9 @@ function Verify(props) {
         if (response.data && response.data.success) {
           form.setSubmitting(false);
           form.resetForm();
-          setHideVisible(true);
+          CustomAlert(response.data.success, response.data.msg, () =>
+            props.navigation.navigate('Login'),
+          );
         } else {
           CustomAlert(response.data.success, response.data.msg);
         }
@@ -46,16 +46,6 @@ function Verify(props) {
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       {loading && <Loader loading={loading} setLoading={setLoading} />}
-      {isVisible && (
-        <OverlaySuccess
-          message={'Verification successfully'}
-          isVisible={isVisible}
-          setHideVisible={setHideVisible}
-          onPressOk={() => {
-            props.navigation.navigate('Login');
-          }}
-        />
-      )}
       <CustomInputText
         form={FormVerify}
         name="code"

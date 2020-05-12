@@ -13,12 +13,13 @@ import {getCart} from '../../Redux/Action/cartAction';
 import {useSelector, useDispatch} from 'react-redux';
 import pageEmpty from '../../Helpers/Image/RestoEmpty.png';
 import formatRupiah from '../../Helpers/FormatRupiah';
-import {deleteData} from '../../Helpers/CRUD';
-import Loader from '../../Components/Loader';
 import API_URL from '../../Components/Dotenv';
+import OverlayDelete from '../../Components/OverlayDelete';
 
 function Carts(props) {
-  const [loading, setLoading] = React.useState(false);
+  const [isVisible, setHideVisible] = React.useState(false);
+  const [idItem, setIDItem] = React.useState(0);
+  const [nameItem, setNameItem] = React.useState('');
   const {dataCart} = useSelector(state => state.cartData);
   const dispatch = useDispatch();
 
@@ -26,29 +27,23 @@ function Carts(props) {
     dispatch(getCart());
   }, []);
 
-  const deleteItems = async id => {
-    setLoading(true);
-    try {
-      const response = await deleteData(`carts/${id}`);
-      console.log(response.data);
-      if (response.data && response.data.success) {
-        dispatch(getCart());
-      } else {
-        CustomAlert(response.data.success, response.data.msg);
-      }
-    } catch (err) {
-      // if (!(err.message === 'Network Error')) {
-      if (err.response) {
-        CustomAlert(err.response.data.success, err.response.data.msg);
-      }
-    }
-    setLoading(false);
+  const handleAlert = (id, name) => {
+    setHideVisible(true);
+    setIDItem(id);
+    setNameItem(name);
   };
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      {loading && <Loader loading={loading} setLoading={setLoading} />}
       <View style={style.containerHeader}>
+        {isVisible && (
+          <OverlayDelete
+            isVisible={isVisible}
+            setHideVisible={setHideVisible}
+            setIdItem={idItem}
+            setNameItem={nameItem}
+          />
+        )}
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
             style={{width: 50, marginTop: 3}}
@@ -96,7 +91,7 @@ function Carts(props) {
                 <Text style={style.textTotal}>{item.total_item}x</Text>
                 <TouchableOpacity
                   style={{width: 50}}
-                  onPress={() => deleteItems(item.id_cart)}>
+                  onPress={() => handleAlert(item.id_cart, item.name_item)}>
                   <Icons name="trash" size={20} style={style.icons} />
                 </TouchableOpacity>
                 <Button

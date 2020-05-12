@@ -16,6 +16,7 @@ import {submitData} from '../../Helpers/CRUD';
 import API_URL from '../../Components/Dotenv';
 import CustomAlert from '../../Components/CustomAlert';
 import {getCart} from '../../Redux/Action/cartAction';
+import {getProfile} from '../../Redux/Action/userDataAction';
 import {useSelector, useDispatch} from 'react-redux';
 
 function CartDetail(props) {
@@ -52,9 +53,9 @@ function CartDetail(props) {
         `checkout/${props.route.params.idItems}`,
         values,
       );
-      console.log(response.data);
       if (response.data && response.data.success) {
         dispatch(getCart());
+        dispatch(getProfile());
         CustomAlert(response.data.success, response.data.msg, () =>
           props.navigation.navigate('Carts'),
         );

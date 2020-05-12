@@ -27,7 +27,7 @@ function Admin(props) {
     state => state.userData,
   );
   const dispatch = useDispatch();
-  console.log(API_URL + dataProfileResto[0].logo);
+  console.log('res', dataProfileResto);
 
   React.useEffect(() => {
     dispatch(profileRestoUser());
